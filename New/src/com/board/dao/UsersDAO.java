@@ -49,6 +49,7 @@ public class UsersDAO {
 			return false;
 		}
 	}
+	//회원 한 명의 정보 가져오기
 	public UsersVO getUser(String user_id) {
 		UsersVO vo = new UsersVO();
 		DbcpBean db = new DbcpBean();
@@ -82,6 +83,8 @@ public class UsersDAO {
 		}
 		return vo;
 	}
+	
+	//로그인 체크하기
 	public UsersVO loginCheck(String user_id, String user_pwd) {
 		UsersVO vo = null;
 		DbcpBean db = new DbcpBean();
@@ -100,7 +103,11 @@ public class UsersDAO {
 			while (rs.next()) {
 				vo = new UsersVO();
 				vo.setUser_id(rs.getString("user_id"));
-				vo.setUser_pwd(rs.getString("user_pwd"));
+				vo.setUser_authority_code(rs.getString("user_authority_code"));
+				vo.setUser_email(rs.getString("user_email"));
+				vo.setUser_name(rs.getString("user_name"));
+				vo.setUser_regdate(rs.getString("user_regdate"));
+				vo.setUser_state_code(rs.getString("user_state_code"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,6 +119,8 @@ public class UsersDAO {
 		}
 		return vo;
 	}
+	
+	//아이디 찾기
 	public String getUserId(String user_name, String user_email) {
 		DbcpBean db = new DbcpBean();
 		Connection conn = null;
@@ -141,6 +150,8 @@ public class UsersDAO {
 		
 		return user_id;
 	}
+	
+	//회원 비밀번호 찾기
 	public boolean getUserPwd(UsersVO vo) {
 		DbcpBean db = new DbcpBean();
 		Connection conn = null;
@@ -170,6 +181,8 @@ public class UsersDAO {
 		}
 		return findPwd;
 	}
+	
+	//비밀번호 변경하기
 	public boolean updatePwd(String user_id, String user_pwd) {
 		DbcpBean db = new DbcpBean();
 		Connection conn = null;
@@ -234,5 +247,71 @@ public class UsersDAO {
 		}
 		
 		return userList;
+	}
+	
+	//게시글 작성자와 아이디 비교하기
+	public UsersVO getBoardWriter(String user_id) {
+		DbcpBean db = new DbcpBean();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		boolean result = false;
+		UsersVO vo = new UsersVO();
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = "SELECT user_id, user_authority_code "
+					+ " FROM board_user u JOIN board b"
+					+ " ON u.user_id = b.board_writer"
+					+ " WHERE user_id = ?";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 값 바인딩 
+			pstmt.setString(1, user_id);
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				vo.setUser_id(rs.getString("user_id"));
+				vo.setUser_authority_code(rs.getString("user_authority_code"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				db.close(conn, pstmt, rs);
+			} catch (Exception e) {
+			}
+		}
+		return vo;
+	}
+	
+	//회원 전체 리스트를 리턴하는 메소드
+	public int getCount() {
+		int rowCount=0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = new DbcpBean().getConn();
+			String sql = "select MAX(ROWNUM) as count"	//rownum중에 가장 큰것.(글의 개수)
+					+ " from board_user";
+			pstmt = conn.prepareStatement(sql);
+			// ? 에 값 바인딩 
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				rowCount=rs.getInt("count");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+				if (pstmt != null)
+					pstmt.close();
+				//connection pool 에 반납하기 
+				if (conn != null)
+					conn.close();
+			} catch (Exception e) {
+			}
+		}
+		return rowCount;
 	}
 }

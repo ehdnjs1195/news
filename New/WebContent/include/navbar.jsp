@@ -22,7 +22,7 @@
 				<li <c:if test="${param.category eq 'file' }">class="active"</c:if> ><a href="#">공지게시판</a></li>
 			</ul>
 			<c:choose>
-				<c:when test="${empty sessionScope.id }">	<!-- sessionScope. 는 생략 가능 -->
+				<c:when test="${empty sessionScope.user_id }">	<!-- sessionScope. 는 생략 가능 -->
 					<div class="pull-right">
 						<a class="btn btn-primary navbar-btn btn-xs" href="${pageContext.request.contextPath }/users/loginForm.jsp">로그인</a>	<%-- 어디에 포함될지 모르니 절대경로를 넣어준다. --%>
 						<a class="btn btn-warning navbar-btn btn-xs" href="${pageContext.request.contextPath }/users/signupForm.jsp">회원가입</a>
@@ -30,7 +30,7 @@
 				</c:when>
 				<c:otherwise>
 					<div class="pull-right">
-						<strong><a class="navbar-link" href="${pageContext.request.contextPath }/users/userInfo.jsp"><i class="fas fa-user"></i>${id }</a></strong>
+						<strong><a class="navbar-link" href="${pageContext.request.contextPath }/users/userInfo.jsp"><i class="fas fa-user"></i>${user_id }</a></strong>
 						<a class="btn btn-warning navbar-btn btn-xs" href="${pageContext.request.contextPath }/users/logout.do">로그아웃</a>
 					</div>
 				</c:otherwise>

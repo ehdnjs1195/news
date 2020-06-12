@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>로그인</title>
-<jsp:include page="${pageContext.request.contextPath }/include/navbar.jsp"/>
+
 </head>
 <body>
 <div class="container">

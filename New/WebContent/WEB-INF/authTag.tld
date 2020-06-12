@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd" >
 <taglib>
-  <tlib-version>tlib-version</tlib-version>	<!-- 1.0 -->
-  <jsp-version>jsp-version</jsp-version>	<!-- 1.2 -->
+  <tlib-version>1.0</tlib-version>	<!-- 1.0 -->
+  <jsp-version>1.2</jsp-version>	<!-- 1.2 -->
   <short-name> authTag </short-name>
     <tag>
         <name>authCheck</name> <!-- JSP에서 사용할 커스텀 태그의 이름 -->
-        <tag-class>com.news.util.AuthorizeTag</tag-class><!-- 태그 핸들러 클래스 -->
-        <tei-class>com.news.util.AuthorizeTagTEI</tei-class>	<!-- 태그 핸들러를 돕는 클래스 -->
+        <tag-class>com.board.util.AuthorizeTag</tag-class><!-- 태그 핸들러 클래스 -->
+        <!-- <tei-class>com.news.util.AuthorizeTagTEI</tei-class> -->	<!-- 태그 핸들러를 돕는 클래스 -->
         <body-content>JSP</body-content> <!-- 바디 부분의 컨텐츠 타입 기술. 없으면 empty로 입력-->
         <attribute> <!-- 태그의 속성 기능을 부여 -->
-            <name>grades</name> <!-- 속성명 -->
+            <name>authority</name> <!-- 속성명 -->
             <required>true</required> <!-- 필수 입력 여부 true : 필수 -->
-            <rtexprvalue>false</rtexprvalue> <!-- 표현식(<%= %>) 사용 여부 -->
+            <rtexprvalue>true</rtexprvalue> <!-- 표현식(<%= %>) 사용 여부 -->
         </attribute>
         <attribute>
-            <name>writerId</name>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>writer</name>
             <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
 </taglib>

@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<jsp:include page="${pageContext.request.contextPath }/include/navbar.jsp"/>
+
 </head>
 <body>
 <div class="container">

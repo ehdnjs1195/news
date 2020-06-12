@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"  %>
+    <%@ taglib uri="/WEB-INF/authTag.tld" prefix="authTag" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>회원 목록</title>
-<jsp:include page="${pageContext.request.contextPath }/include/navbar.jsp"/>
+<authTag:authCheck authority="U002" id="${user_id }">권한이 없습니다.</authTag:authCheck>
 </head>
 <body>
 <div class="container">

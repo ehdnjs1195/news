@@ -38,7 +38,7 @@ public class UsersSignupController implements Controller {
 		
 		//Output View 페이지로 이동
 		req.setAttribute("id", id);
-		HttpUtil.forward(req, resp, "/users/signup.jsp");
+		HttpUtil.forward(req, resp, "/users/signup.page");
 	}
 
 	
