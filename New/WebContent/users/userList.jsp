@@ -7,7 +7,7 @@
 <head>
 <meta charset="UTF-8">
 <title>회원 목록</title>
-<authTag:authCheck authority="U002" id="${user_id }">권한이 없습니다.</authTag:authCheck>
+<jsp:include page="../include/resource.jsp"></jsp:include>
 </head>
 <body>
 <div class="container">
@@ -44,6 +44,80 @@
 			</c:forEach>
 		</tbody>
 	</table>
+	
+	<!-- pager{s} -->
+	<div id="pagerBox">
+		<ul class="pager">
+			<li>
+				<select name="listSize" id="listSize" onchange="fn_listSize('${pager.page}', '${pager.range}', '${pager.rangeSize}')">
+					<option value="5">5개씩 보기</option>
+					<option value="10">10개씩 보기</option>
+					<option value="20">20개씩 보기</option>
+					<option value="100">100개씩 보기</option>
+				</select>
+			</li>
+			<c:if test="${pager.prev}">
+				<li class="page-item"><a class="page-link" href="#" onClick="fn_prev('${pager.page}', '${pager.range}', '${pager.rangeSize}')">Previous</a></li>
+			</c:if>
+				
+			<c:forEach begin="${pager.startPage}" end="${pager.endPage}" var="idx">
+				<li class="page-item <c:out value="${pager.page == idx ? 'active' : ''}"/> "><a class="page-link" href="#" onClick="fn_pager('${idx}', '${pager.range}', '${pager.rangeSize}')"> ${idx} </a></li>
+			</c:forEach>
+				
+			<c:if test="${pager.next}">
+				<li class="page-item"><a class="page-link" href="#" onClick="fn_next('${pager.range}', '${pager.range}', '${pager.rangeSize}')" >Next</a></li>
+			</c:if>
+		</ul>
+	</div>
+	<!-- pager{e} -->
+
 </div>
+
+<script>
+//리스트 개수 선택
+function fn_listSize(page, range, rangeSize){
+	var listSize = $("#listSize").val();
+	var url = "${pageContext.request.contextPath}/users/userList.do";
+	url = url + "?page=" + page;
+	url = url + "&range=" + range;
+	url = url + "$listSize=" + listSize;
+
+	location.href = url;
+}
+
+//이전 버튼 이벤트
+function fn_prev(page, range, rangeSize) {
+		var page = ((range - 2) * rangeSize) + 1;
+		var range = range - 1;
+		
+		var url = "${pageContext.request.contextPath}/users/userList.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+
+		location.href = url;
+	}
+
+  //페이지 번호 클릭
+	function fn_pager(page, range, rangeSize, searchType, keyword) {
+		var url = "${pageContext.request.contextPath}/users/userList.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+
+		location.href = url;	
+	}
+
+	//다음 버튼 이벤트
+	function fn_next(page, range, rangeSize) {
+		var page = parseInt((range * rangeSize)) + 1;
+		var range = parseInt(range) + 1;
+		
+		var url = "${pageContext.request.contextPath}/users/userList.do";
+		url = url + "?page=" + page;
+		url = url + "&range=" + range;
+		
+		location.href = url;
+	}
+</script>
+
 </body>
 </html>

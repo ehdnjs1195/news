@@ -3,6 +3,7 @@ package com.board.service;
 import java.util.List;
 
 import com.board.dao.UsersDAO;
+import com.board.util.Pager;
 import com.board.vo.UsersVO;
 
 public class UsersService {
@@ -48,8 +49,12 @@ public class UsersService {
 		return dao.updatePwd(user_id, user_pwd);
 	}
 	//회원 목록 가져오기
-	public List<UsersVO> getUserList() {
-		return dao.getUserList();
+	public List<UsersVO> getUserList(Pager pager) {
+		return dao.getUserList(pager);
+	}
+	//회원 수 가져오기
+	public int getUserCnt() {
+		return dao.getUserCnt();
 	}
 	
 }

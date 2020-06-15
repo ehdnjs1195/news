@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.board.util.DbcpBean;
+import com.board.util.Pager;
 import com.board.vo.UsersVO;
 
 public class UsersDAO {
@@ -212,8 +213,8 @@ public class UsersDAO {
 			return false;
 		}
 	}
-	//회원 목록 가져오기
-	public List<UsersVO> getUserList() {
+	//회원 목록 가져오기 (페이징)
+	public List<UsersVO> getUserList(Pager pager) {
 		DbcpBean db = new DbcpBean();
 		List<UsersVO> userList = new ArrayList<>();
 		UsersVO vo = null;
@@ -222,19 +223,27 @@ public class UsersDAO {
 		ResultSet rs = null;
 		try {
 			conn = new DbcpBean().getConn();
-			String sql = "SELECT * FROM board_user";
+			String sql = "SELECT * FROM "
+					+ " (SELECT result1.*, ROWNUM AS rnum"
+					+ " FROM ("
+					+ " SELECT *"
+					+ " FROM board_user"
+					+ " ORDER BY user_regdate DESC) result1)"
+					+ " WHERE rnum BETWEEN ? AND ?";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩 
-
+			
+			pstmt.setInt(1, pager.getStartList());
+			pstmt.setInt(2, pager.getEndList());
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				vo = new UsersVO();
-				vo.setUser_authority_code(rs.getString("user_authority_code"));
-				vo.setUser_email(rs.getString("user_email"));
 				vo.setUser_id(rs.getString("user_id"));
 				vo.setUser_name(rs.getString("user_name"));
+				vo.setUser_email(rs.getString("user_email"));
 				vo.setUser_regdate(rs.getString("user_regdate"));
 				vo.setUser_state_code(rs.getString("user_state_code"));
+				vo.setUser_authority_code(rs.getString("user_authority_code"));
 				userList.add(vo);
 			}
 		} catch (Exception e) {
@@ -282,36 +291,32 @@ public class UsersDAO {
 		return vo;
 	}
 	
-	//회원 전체 리스트를 리턴하는 메소드
-	public int getCount() {
-		int rowCount=0;
+
+	//회원 전체 리스트를 가져오는 메소드
+	public int getUserCnt() {
+		DbcpBean db = new DbcpBean();
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		int count = 0;
 		try {
 			conn = new DbcpBean().getConn();
-			String sql = "select MAX(ROWNUM) as count"	//rownum중에 가장 큰것.(글의 개수)
-					+ " from board_user";
+			String sql = "SELECT count(*) cnt FROM board_user";
 			pstmt = conn.prepareStatement(sql);
 			// ? 에 값 바인딩 
+
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
-				rowCount=rs.getInt("count");
+				count = rs.getInt("cnt");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				if (rs != null)
-					rs.close();
-				if (pstmt != null)
-					pstmt.close();
-				//connection pool 에 반납하기 
-				if (conn != null)
-					conn.close();
+				db.close(conn, pstmt, rs);
 			} catch (Exception e) {
 			}
 		}
-		return rowCount;
+		return count;
 	}
 }

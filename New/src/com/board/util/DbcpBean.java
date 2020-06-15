@@ -45,6 +45,7 @@ public class DbcpBean {
 		if(ps != null) {
 			try {
 				ps.close();
+				conn.close();
 			} catch(Exception e) {
 				System.out.println("PreparedStatement.close() 오류발생: " +e);
 			}
